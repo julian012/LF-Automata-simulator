@@ -1,8 +1,8 @@
-<div class="canvas-wrapper" (toolclicked)="onToolClicked($event)" #canvas
-  (mousedown)="onCanvasMouseDown($event)"
-  (mouseup)="onCanvasMouseUp($event)"
-  (contextmenu)="preventContextMenu($event)"
-  (mousemove)="onCanvasMouseMove($event)">
+<div class="canvas-wrapper" #canvas
+     (mousedown)="onCanvasMouseDown($event)"
+     (mouseup)="onCanvasMouseUp($event)"
+     (contextmenu)="preventContextMenu($event)"
+     (mousemove)="onCanvasMouseMove($event)">
 
   <div class="state" *ngFor="let state of automaton.states"
   [style.transform]="state.transformPosition"
@@ -50,10 +50,10 @@
   [style.left.px]="contextMenuLeft">
   <div *ngIf="contextMenuType == 'state'">
     <label for="stateName">Nombre</label>
-    <input type="text" [(ngModel)]="automaton.selectedState.name" (change)="automaton.metadata.isUnsaved = true;">
+    <input  id="stateName" type="text" [(ngModel)]="automaton.selectedState.name" (change)="automaton.metadata.isUnsaved = true;">
 
     <label for="properties">Propiedades</label>
-    <div class="checkbox-wrapper">
+    <div class="checkbox-wrapper" id="properties">
       <input type="checkbox" name="properties" value="isInitial" id="isInitial"
       [checked]="automaton.selectedState.type == 'initial'
                 || automaton.selectedState.type == 'ambivalent'"
@@ -77,6 +77,7 @@
       <span class="formal-string">{{ automaton.alphabet.formalString }}</span>
     </div>
     <div class="plus-adder">
+      <label for="alphabet"></label>
       <input type="text" id="alphabet" #conditionInput
           (keyup.enter)="addConditionToTransition(conditionInput.value); conditionInput.value = ''"
           (blur)="addConditionToTransition(conditionInput.value); conditionInput.value = ''">

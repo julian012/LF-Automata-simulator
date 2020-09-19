@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Project, Metadata } from '../entities/project';
+import { Project } from '../entities/project';
 import { Subject } from 'rxjs/Subject';
 
 import { AppComponent } from '../../../app.component';
@@ -21,10 +21,6 @@ export class AppStateService {
 
   get projectChangedStream() {
     return this.projectChanged$;
-  }
-
-  get hasActiveProject() {
-    return typeof this.activeProject !== "undefined";
   }
 
   get project() {
@@ -80,5 +76,4 @@ export class AppStateService {
   redoAction() {
     this.toolbarComponent.redoAction();
   }
-
 }

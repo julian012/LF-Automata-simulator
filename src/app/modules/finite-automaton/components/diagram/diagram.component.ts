@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
-import { State, Transition, Coords, AlphabetSymbol } from '../../entities/automaton';
+import { State, Transition, AlphabetSymbol, Coords } from '../../entities/automaton';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { AppStateService } from '../../services/app-state.service';
 import { FiniteAutomaton } from '../../entities/finite-automaton';

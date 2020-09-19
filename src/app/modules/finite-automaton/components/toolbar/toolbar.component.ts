@@ -41,12 +41,12 @@ export class ToolbarComponent implements OnInit {
     if (isToggleable) {
       this.selectTool(toolName);
     }
-    this.toolclicked.emit(new ToolEvent(toolName, isToggleable, this.selectedTool == toolName));
-    this.appStateService.announceToolbarClick(new ToolEvent(toolName, isToggleable, this.selectedTool == toolName));
+    this.toolclicked.emit(new ToolEvent(toolName, isToggleable, this.selectedTool === toolName));
+    this.appStateService.announceToolbarClick(new ToolEvent(toolName, isToggleable, this.selectedTool === toolName));
   }
 
   selectTool(tool: string) {
-    if (this.selectedTool != tool) {
+    if (this.selectedTool !== tool) {
       this.selectedTool = tool;
     } else {
       this.deselectTool();

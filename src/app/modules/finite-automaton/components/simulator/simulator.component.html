@@ -2,11 +2,6 @@
   <div class="simulator-options">
     <label for="word">Palabra a validar</label>
     <input type="text" [(ngModel)]="inputWord" id="word">
-
-    <!--<label for="speed">Speed: <span>{{ simSpeed }}</span></label>
-    <input type="range" [(ngModel)]="speed" id="speed" #speedRange (change)="updateSpeed(speedRange.value)">-->
-
-    <!--<button (click)="toggleState()">{{ startText }}</button>-->
     <button (click)="step()">Paso a paso</button>
     <button (click)="reset()">Reiniciar</button>
   </div>
