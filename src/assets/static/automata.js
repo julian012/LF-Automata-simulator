@@ -1,4 +1,3 @@
-// Copyright 2017 Christopher Jáquez Prado
 "use strict";
 
 class Drawer {

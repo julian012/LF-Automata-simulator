@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AppStateService } from '../../../../app-state.service';
-import { FiniteAutomaton } from '../../finite-automaton';
+import { AppStateService } from '../../services/app-state.service';
+import { FiniteAutomaton } from '../../entities/finite-automaton';
 import { Subscription } from 'rxjs/Subscription';
-import { AlphabetSymbol } from '../../../../automaton';
+import { AlphabetSymbol } from '../../entities/automaton';
 
 
 

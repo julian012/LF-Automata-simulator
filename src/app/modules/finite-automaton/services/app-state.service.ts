@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Project, Metadata } from './project';
+import { Project, Metadata } from '../entities/project';
 import { Subject } from 'rxjs/Subject';
 
-import { AppComponent } from './app.component';
-import { ToolbarComponent, ToolEvent } from './toolbar.component';
+import { AppComponent } from '../../../app.component';
+import { ToolbarComponent, ToolEvent } from '../components/toolbar/toolbar.component';
 
 @Injectable()
 export class AppStateService {

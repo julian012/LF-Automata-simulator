@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
-import { Automaton, State, Transition, Coords, AlphabetSymbol } from '../../../../automaton';
-import { AppStateService } from '../../../../app-state.service';
-import { FiniteAutomaton } from '../../finite-automaton';
+import { Automaton, State, Transition, Coords, AlphabetSymbol } from '../../entities/automaton';
+import { AppStateService } from '../../services/app-state.service';
+import { FiniteAutomaton } from '../../entities/finite-automaton';
 import { Subscription } from 'rxjs/Subscription';
 
 declare var alertify;

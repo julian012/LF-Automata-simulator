@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
-import { State, Transition, Coords, AlphabetSymbol } from '../../../../automaton';
+import { State, Transition, Coords, AlphabetSymbol } from '../../entities/automaton';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { AppStateService } from '../../../../app-state.service';
-import { FiniteAutomaton } from '../../finite-automaton';
+import { AppStateService } from '../../services/app-state.service';
+import { FiniteAutomaton } from '../../entities/finite-automaton';
 import { Subscription } from 'rxjs/Subscription';
-import { ToolEvent } from '../../../../toolbar.component';
+import { ToolEvent } from '../toolbar/toolbar.component';
 
 
 @Component({

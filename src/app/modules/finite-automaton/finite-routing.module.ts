@@ -4,13 +4,11 @@ import { DiagramComponent } from './components/diagram/diagram.component';
 import { FiniteComponent } from './finite.component';
 import { SimulatorComponent } from './components/simulator/simulator.component';
 import { OptionsComponent } from './components/options/options.component';
-import { UnsavedChangesGuard } from '../../unsaved-changes.guard';
 
 const routes: Routes = [
   {
     path: 'finite',
     component: FiniteComponent,
-    canDeactivate: [UnsavedChangesGuard],
     children: [
       {
         path: '',

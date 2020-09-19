@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { AppStateService } from './app-state.service';
+import { AppStateService } from '../../services/app-state.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

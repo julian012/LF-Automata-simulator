@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppStateService } from './app-state.service';
+import { AppStateService } from './modules/finite-automaton/services/app-state.service';
 
 @Component({
   selector: 'app-root',
