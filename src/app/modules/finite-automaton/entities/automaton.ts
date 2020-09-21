@@ -17,29 +17,32 @@ export class Automaton extends Project {
   }
 
   createState(position: Coords): State {
-    const stateNumber = this.stateAutoIncrement++;
-    const state = new State(stateNumber, 'q' + stateNumber, 'normal', new Coords(position.x, position.y));
-    if (stateNumber === 0) { state.type = 'initial'; }
+    let stateNumber = this.stateAutoIncrement++,
+      state = new State(stateNumber, "q" + stateNumber, "normal", new Coords(position.x, position.y));
+
+    if (stateNumber == 0) state.type = "initial";
+
     this.states.push(state);
+
     return state;
   }
 
   deleteState(state: State) {
-    const index = this.states.indexOf(state);
+    let index = this.states.indexOf(state);
     this.states.splice(index, 1);
     this.states.forEach(currentState => {
       currentState.transitions = currentState.transitions.filter((transition) => {
-        return transition.destination !== state;
+        return transition.destination != state;
       });
-    });
+    })
   }
 
   deleteTransition(transition: Transition) {
-    const index = transition.origin.transitions.indexOf(transition);
+    let index = transition.origin.transitions.indexOf(transition);
     transition.origin.transitions.splice(index, 1);
-    if (transition.shouldDuplicateLayout !== 0) {
+    if (transition.shouldDuplicateLayout != 0) {
       transition.destination.transitions.forEach((tr) => {
-        if (tr.destination === transition.origin) {
+        if (tr.destination == transition.origin) {
           tr.shouldDuplicateLayout = 0;
         }
       });
@@ -53,8 +56,8 @@ export class Automaton extends Project {
   }
 
   removeSymbol(symbol: AlphabetSymbol) {
-    const index = this.alphabet.symbols.indexOf(symbol);
-    if (index !== -1) { this.alphabet.symbols.splice(index, 1); }
+    let index = this.alphabet.symbols.indexOf(symbol);
+    if (index != -1) this.alphabet.symbols.splice(index, 1);
 
     this.states.forEach((state) => { // Erase these symbols if they are used in a transition
       state.transitions.forEach((transition) => {
@@ -62,7 +65,7 @@ export class Automaton extends Project {
           transition.removeCondition(symbol);
         }
       });
-    });
+    })
   }
 }
 
@@ -82,13 +85,14 @@ export class State {
   }
 
   get transformPosition() {
-    return 'translate(' + (this.layoutPosition.x - 30) + 'px, '
-      + (this.layoutPosition.y - 30) + 'px)';
+    let position = "translate(" + (this.layoutPosition.x - 30) + "px, "
+      + (this.layoutPosition.y - 30) + "px)";
+    return position;
   }
 
   addTransition(to: State): Transition {
     for (let i = 0; i < this.transitions.length; i++) {
-      if (this.transitions[i].destination === to) {
+      if (this.transitions[i].destination == to) {
         return this.transitions[i]; // Prevent duplicate transitions
       }
     }
@@ -116,8 +120,8 @@ export class Transition {
     this.shouldDuplicateLayout = 0;
     this.hasRightArrow = true;
 
-    for (let i = 0; i < destination.transitions.length && this.shouldDuplicateLayout === 0; i++) {
-      if (destination.transitions[i].destination === origin) {
+    for (let i = 0; i < destination.transitions.length && this.shouldDuplicateLayout == 0; i++) {
+      if (destination.transitions[i].destination == origin) {
         destination.transitions[i].shouldDuplicateLayout = 1;
         this.shouldDuplicateLayout = -1;
       }
@@ -126,32 +130,32 @@ export class Transition {
 
   get conditionsString() {
     if (this.conditions.length > 0) {
-      let setString = '';
-      const lastIndex = this.conditions.length - 1;
+      let setString = "",
+        lastIndex = this.conditions.length - 1;
       this.conditions.forEach((symbol, index) => {
         setString += symbol.symbol;
-        if (index !== lastIndex) {
-          setString += ', ';
+        if (index != lastIndex) {
+          setString += ", ";
         }
       });
       return setString;
     }
-    return '\u2205';
+    return "\u2205";
   }
 
   get midPoint(): Coords {
-    const x = (this.origin.layoutPosition.x + this.destination.layoutPosition.x) / 2,
+    let x = (this.origin.layoutPosition.x + this.destination.layoutPosition.x) / 2,
       y = (this.origin.layoutPosition.y + this.destination.layoutPosition.y) / 2;
 
     return new Coords(x, y);
   }
 
   get transformPosition() {
-    if (this.origin === this.destination) {
-      return 'translate(0, -45px)';
+    if (this.origin == this.destination) {
+      return "translate(0, -45px)";
     }
-    const midPoint = this.midPoint;
-    let x = midPoint.x,
+    let midPoint = this.midPoint,
+      x = midPoint.x,
       y = midPoint.y,
       angle = Math.atan((this.destination.layoutPosition.y - this.origin.layoutPosition.y)
         / (this.destination.layoutPosition.x - this.origin.layoutPosition.x));
@@ -159,13 +163,18 @@ export class Transition {
     x -= this.origin.layoutPosition.x;
     y -= this.origin.layoutPosition.y;
 
-    this.hasRightArrow = !((x < 0 && y <= 0) || (x < 0 && y > 0));
 
-    if (this.shouldDuplicateLayout !== 0) { // Prevent most states from having to 4 comparisons
-      if ((this.shouldDuplicateLayout === 1 && x >= 0) || (this.shouldDuplicateLayout === -1 && x < 0)) {
+    if ((x < 0 && y <= 0) || (x < 0 && y > 0)) {
+      this.hasRightArrow = false;
+    } else {
+      this.hasRightArrow = true;
+    }
+
+    if (this.shouldDuplicateLayout != 0) { // Prevent most states from having to 4 comparisons
+      if ((this.shouldDuplicateLayout == 1 && x >= 0) || (this.shouldDuplicateLayout == -1 && x < 0)) {
         y -= Math.cos(angle) * 8 * this.shouldDuplicateLayout;
         x += Math.sin(angle) * 8 * this.shouldDuplicateLayout;
-      } else if ((this.shouldDuplicateLayout === 1 && x < 0) || (this.shouldDuplicateLayout === -1 && x >= 0)) {
+      } else if ((this.shouldDuplicateLayout == 1 && x < 0) || (this.shouldDuplicateLayout == -1 && x >= 0)) {
         y += Math.cos(angle) * 8 * this.shouldDuplicateLayout;
         x -= Math.sin(angle) * 8 * this.shouldDuplicateLayout;
       }
@@ -173,17 +182,19 @@ export class Transition {
 
     angle *= 180 / Math.PI; // Convert to degrees
 
-    return 'translate(' + x + 'px, ' + y + 'px) rotate(' + angle + 'deg)';
+    return "translate(" + x + "px, " + y + "px) rotate(" + angle + "deg)";
   }
 
   get width() {
-    if (this.origin === this.destination) { return 45; }
+    if (this.origin == this.destination) {
+      return 45;
+    }
     return this.origin.layoutPosition.distanceTo(this.destination.layoutPosition) - 60;
   }
 
   hasCondition(condition: AlphabetSymbol) {
     for (let i = 0; i < this.conditions.length; i++) {
-      if (this.conditions[i].symbol === condition.symbol) { return true; }
+      if (this.conditions[i].symbol == condition.symbol) return true;
     }
     return false;
   }
@@ -192,16 +203,16 @@ export class Transition {
     if (!this.hasCondition(condition)) {
       this.conditions.push(condition);
       this.conditions.sort((a, b) => {
-        if (a.symbol < b.symbol) { return -1; }
-        if (a.symbol > b.symbol) { return 1; }
+        if (a.symbol < b.symbol) return -1;
+        if (a.symbol > b.symbol) return 1;
         return 0;
       });
     }
   }
 
   removeCondition(condition: AlphabetSymbol) {
-    const index = this.conditions.indexOf(condition);
-    if (index !== -1) { this.conditions.splice(index, 1); }
+    let index = this.conditions.indexOf(condition);
+    if (index != -1) this.conditions.splice(index, 1);
   }
 }
 
@@ -213,36 +224,38 @@ export class Alphabet {
   }
 
   addSymbol(symbol: AlphabetSymbol) {
-    const repeatedSymbol = this.hasSymbol(symbol);
+    let repeatedSymbol = this.hasSymbol(symbol);
     if (!repeatedSymbol) {
       this.symbols.push(symbol);
       this.symbols.sort((a, b) => {
-        if (a.symbol < b.symbol) { return -1; }
-        if (a.symbol > b.symbol) { return 1; }
+        if (a.symbol < b.symbol) return -1;
+        if (a.symbol > b.symbol) return 1;
         return 0;
       });
     }
   }
 
   removeSymbol(symbol: AlphabetSymbol) {
-    const index = this.symbols.indexOf(symbol);
-    if (index !== -1) { this.symbols.splice(index, 1); }
+    let index = this.symbols.indexOf(symbol);
+    if (index != -1) this.symbols.splice(index, 1);
   }
 
   hasSymbol(symbol: AlphabetSymbol) {
     for (let i = 0; i < this.symbols.length; i++) {
-      if (this.symbols[i].symbol === symbol.symbol) { return true; }
+      if (this.symbols[i].symbol == symbol.symbol) return true;
     }
     return false;
   }
 
   get formalString() {
     if (this.symbols.length > 0) {
-      let setString = '';
-      const lastIndex = this.symbols.length - 1;
+      let setString = "",
+        lastIndex = this.symbols.length - 1;
       this.symbols.forEach((symbol, index) => {
         setString += symbol.symbol;
-        if (index !== lastIndex) { setString += ', '; }
+        if (index != lastIndex) {
+          setString += ", ";
+        }
       });
       return '\u03A3 = {' + setString + '}';
     }

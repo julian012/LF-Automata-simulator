@@ -1,8 +1,8 @@
-<div class="canvas-wrapper" #canvas
-     (mousedown)="onCanvasMouseDown($event)"
-     (mouseup)="onCanvasMouseUp($event)"
-     (contextmenu)="preventContextMenu($event)"
-     (mousemove)="onCanvasMouseMove($event)">
+<div class="canvas-wrapper" (toolclicked)="onToolClicked($event)" #canvas
+  (mousedown)="onCanvasMouseDown($event)"
+  (mouseup)="onCanvasMouseUp($event)"
+  (contextmenu)="preventContextMenu($event)"
+  (mousemove)="onCanvasMouseMove($event)">
 
   <div class="state" *ngFor="let state of automaton.states"
   [style.transform]="state.transformPosition"
@@ -50,10 +50,10 @@
   [style.left.px]="contextMenuLeft">
   <div *ngIf="contextMenuType == 'state'">
     <label for="stateName">Nombre</label>
-    <input  id="stateName" type="text" [(ngModel)]="automaton.selectedState.name" (change)="automaton.metadata.isUnsaved = true;">
+    <input type="text" [(ngModel)]="automaton.selectedState.name" (change)="automaton.metadata.isUnsaved = true;">
 
     <label for="properties">Propiedades</label>
-    <div class="checkbox-wrapper" id="properties">
+    <div class="checkbox-wrapper">
       <input type="checkbox" name="properties" value="isInitial" id="isInitial"
       [checked]="automaton.selectedState.type == 'initial'
                 || automaton.selectedState.type == 'ambivalent'"
@@ -72,16 +72,18 @@
         <span class="remove" (click)="removeConditionFromTransition(condition)">x</span>
       </div>
       <span *ngIf="automaton.selectedTransition.conditions.length == 0">
-        Una trasición vacía por defecto es λ
+        por defecto λ
       </span>
       <span class="formal-string">{{ automaton.alphabet.formalString }}</span>
     </div>
     <div class="plus-adder">
-      <label for="alphabet"></label>
-      <input type="text" id="alphabet" #conditionInput
+      <div class="row">
+      <input class="form-control" type="text" id="alphabet" #conditionInput
           (keyup.enter)="addConditionToTransition(conditionInput.value); conditionInput.value = ''"
           (blur)="addConditionToTransition(conditionInput.value); conditionInput.value = ''">
-      <button (click)="addConditionToTransition(conditionInput.value); conditionInput.value = ''">+</button>
-    </div>
+      
+          <button class="btn btn-primary"(click)="addConditionToTransition(conditionInput.value); conditionInput.value = ''">+</button>
+        </div>
+        </div>
   </div>
 </div>

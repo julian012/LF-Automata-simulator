@@ -1,9 +1,13 @@
+<div class="general-tools" [attr.style]="style" *ngIf="appStateService.project">
+  <div id="saveTool" class="tool save" ></div>
+
+</div>
 <div class="contextual-tools">
   <div id="finiteTools" class="contextual-wrapper" *ngIf="toolbarEnableState.finiteautomaton">
-    <div id="deleteTool" class="tool delete" (click)="onToolClick('delete', false)"></div>
-    <div id="newFiniteState" class="tool newFiniteState" [class.active]="selectedTool == 'newFiniteState'"
+    <div id="newFiniteState" class="tool newFiniteState btn-primary" [class.active]="selectedTool == 'newFiniteState'"
       (click)="onToolClick('newFiniteState', true)"></div>
-    <div id="newFiniteTransition" class="tool newFiniteTransition" [class.active]="selectedTool == 'newFiniteTransition'"
+    <div id="newFiniteTransition" class="tool newFiniteTransition btn-warning" [class.active]="selectedTool == 'newFiniteTransition'"
       (click)="onToolClick('newFiniteTransition', true)"></div>
+      <div  id="deleteTool" class="tool delete btn-danger" (click)="onToolClick('delete', false)"></div>
   </div>
 </div>

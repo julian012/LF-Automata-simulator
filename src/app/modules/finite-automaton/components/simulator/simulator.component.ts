@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { State, Transition, AlphabetSymbol } from '../../entities/automaton';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Automaton, State, Transition, Coords, AlphabetSymbol } from '../../entities/automaton';
 import { AppStateService } from '../../services/app-state.service';
 import { FiniteAutomaton } from '../../entities/finite-automaton';
 import { Subscription } from 'rxjs/Subscription';
@@ -37,7 +37,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.automaton = this.appStateService.project as FiniteAutomaton;
-    alertify.logPosition('top right');
+ 
     this.projectSubscription = this.appStateService.projectChangedStream.subscribe((newProject) => {
       this.automaton = newProject as FiniteAutomaton;
     });
@@ -86,8 +86,16 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.simulation.initializeSimulation(this.inputWord);
       return true;
     } else {
-      alertify.error('La palabra contiene símbolos que no están en el alfabeto.');
+      alertify.error('La palabra contiene simbolos fuera del alfabeto');
       return false;
+    }
+  }
+
+  updateSpeed(value: number) {
+    if (!(typeof (this.simulation) == 'undefined'
+      || this.simulation == null
+      || !this.simulation.isRunning)) {
+      this.simulation.updateInterval(2000 - value * 20);
     }
   }
 
@@ -97,7 +105,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return this.outputError(error);
     }
 
-    if (typeof (this.simulation) === 'undefined' || this.simulation == null) {
+    if (typeof (this.simulation) == 'undefined' || this.simulation == null) {
       const couldCreateSimulation = this.createSimulation();
       if (couldCreateSimulation) {
         this.simulation.step();
@@ -132,22 +140,22 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   // Returns null if the automaton is valid, else the error object
   validateAutomaton(): ValidationError {
-    const automaton = this.automaton;
-    let initialStates = 0,
-      finalStates = 0;
-    const alphabetSymbols = automaton.alphabet.symbols.length;
-    const isDeterministic = automaton.isDeterministic;
+    let automaton = this.automaton,
+      initialStates = 0,
+      finalStates = 0,
+      alphabetSymbols = automaton.alphabet.symbols.length,
+      isDeterministic = automaton.isDeterministic;
 
     for (let i = 0; i < automaton.states.length; i++) {
       const state = automaton.states[i];
 
-      if (state.type === 'initial' || state.type === 'ambivalent') {
+      if (state.type == 'initial' || state.type == 'ambivalent') {
         if (++initialStates > 1) {
           return new ValidationError('An automaton can only have one initial state', state);
         }
       }
 
-      if (state.type === 'final' || state.type === 'ambivalent') {
+      if (state.type == 'final' || state.type == 'ambivalent') {
         finalStates++;
       }
 
@@ -155,7 +163,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         let conditions = [];
 
         for (let j = 0; j < state.transitions.length; j++) {
-          if (state.transitions[j].conditions.length === 0) {
+          if (state.transitions[j].conditions.length == 0) {
             return new ValidationError('A DFA can\'t have Kleene Closures', state);
           }
           conditions = conditions.concat(state.transitions[j].conditions);
@@ -169,8 +177,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (finalStates === 0) {
-      return new ValidationError('Debe haber al menos un estado final', null);
+    if (finalStates == 0) {
+      return new ValidationError('No se encuentra un estado final.', null);
     }
     return null;
   }
@@ -190,7 +198,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   validateWord(word: string) {
     const alphabet = this.automaton.alphabet.symbols;
 
-    if (word.indexOf(',') !== -1) {
+    if (word.indexOf(',') != -1) {
       const words = word.split(',');
       for (let i = 0; i < words.length; i++) {
         if (!this.validateWord(words[i])) {
@@ -204,7 +212,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         for (let j = word.length; j > i && !contained; j--) {
           const substr = word.slice(i, j);
           for (let k = 0; k < alphabet.length; k++) {
-            if (substr === alphabet[k].symbol) {
+            if (substr == alphabet[k].symbol) {
               contained = true;
               i += j - i;
               break;
@@ -242,8 +250,8 @@ class Simulation {
     this.stepInterval = null;
 
     for (let i = 0; i < automaton.states.length; i++) {
-      if (automaton.states[i].type === 'initial'
-        || automaton.states[i].type === 'ambivalent') {
+      if (automaton.states[i].type == 'initial'
+        || automaton.states[i].type == 'ambivalent') {
         this.initialState = automaton.states[i];
         break;
       }
@@ -267,10 +275,10 @@ class Simulation {
   }
 
   extractInputSymbols(rawSymbolWord: string): AlphabetSymbol[] {
-    const validSymbols = this.automaton.alphabet.symbols;
-    let detectedSymbols: AlphabetSymbol[] = [];
+    let validSymbols = this.automaton.alphabet.symbols,
+      detectedSymbols: AlphabetSymbol[] = [];
 
-    if (rawSymbolWord.indexOf(',') !== -1) { // if it is a comma separated list, iteratively recurse into it
+    if (rawSymbolWord.indexOf(',') != -1) { // if it is a comma separated list, iteratively recurse into it
       const words = rawSymbolWord.split(',');
       words.forEach((word) => {
         detectedSymbols = detectedSymbols.concat(this.extractInputSymbols(word));
@@ -282,7 +290,7 @@ class Simulation {
         for (let j = rawSymbolWord.length; j > i && !contained; j--) {
           const substr = rawSymbolWord.slice(i, j);
           for (let k = 0; k < validSymbols.length; k++) {
-            if (substr === validSymbols[k].symbol) {
+            if (substr == validSymbols[k].symbol) {
               contained = true;
               detectedSymbols.push(validSymbols[k]);
               i += j - i;
@@ -291,8 +299,8 @@ class Simulation {
           }
         }
         if (!contained) {
-          alertify.error('The word contains undefined symbols.');
-          throw new Error('Simbolos indefinidos en la palabra');
+          alertify.error('La palabra contiene simbolor fuera del alfabeto');
+          throw new Error('Undefined symbols in word');
         }
       }
       return detectedSymbols;
@@ -319,12 +327,12 @@ class Simulation {
   }
 
   getTransitionSymbol(currentDepth): [AlphabetSymbol, number] {
-    if (currentDepth >= this.inputWord.length) { return [null, 0]; }
+    if (currentDepth >= this.inputWord.length) return [null, 0];
     const alphabet = this.automaton.alphabet.symbols;
     for (let i = this.inputWord.length; i > currentDepth; i--) {
       const substr = this.inputWord.slice(currentDepth, i);
       for (let j = 0; j < alphabet.length; j++) {
-        if (substr === alphabet[j].symbol) {
+        if (substr == alphabet[j].symbol) {
           return [alphabet[j], i - currentDepth];
         }
       }
@@ -335,18 +343,18 @@ class Simulation {
   step() {
     this.currentElement = this.traversalStack.pop();
 
-    if (typeof (this.currentElement) === 'undefined') { // Our traversal stack is empty
+    if (typeof (this.currentElement) == 'undefined') { // Our traversal stack is empty
       if (this.startInterval != null) { // Pause the simulation
         this.stopInterval();
       }
       if (this.lastDepth + 1 < this.inputWord.length && !this.reachedValidity) {
         // We ran out of states and we still hadn't processed the word or validated it in another branch
-        alertify.log('La palabra es incorrecta');
+        alertify.log('Palabra Validada.');
       }
       return; // Stop the step
     }
 
-    if (this.currentElement.type === 'state') {
+    if (this.currentElement.type == 'state') {
       const stateTraversalElement = this.currentElement as TraversalState,
         state = stateTraversalElement.state,
         inputSymbol = this.inputSymbols[stateTraversalElement.depth];
@@ -354,19 +362,19 @@ class Simulation {
       this.automaton.activeElement = state;
       this.lastDepth = stateTraversalElement.depth;
 
-      if (typeof(inputSymbol) === 'undefined') { // We reached the end of the word
-        if (state.type === 'final' || state.type === 'ambivalent') {
-          alertify.success('La palabra es válida :D');
+      if (typeof(inputSymbol) == 'undefined') { // We reached the end of the word
+        if (state.type == 'final' || state.type == 'ambivalent') {
+          alertify.success('Palabra Validada.');
           this.reachedValidity = true; // If this is a final state, we win!
-        } else if (this.traversalStack.length === 0 && !this.reachedValidity) {
-          alertify.log('La palabra no es válida D:'); // Else, if there is nothing more in the stack we lose.
+        } else if (this.traversalStack.length == 0 && !this.reachedValidity) {
+          alertify.log('Palabra no valida'); // Else, if there is nothing more in the stack we lose.
         }
       } else { // If we still have a word, get ready to branch
         for (let i = state.transitions.length - 1; i >= 0; i--) {
           const transition = state.transitions[i]; // For every transition that matches our condition, push it to the stack
-          if (transition.conditions.length === 0
+          if (transition.conditions.length == 0
             || transition.hasCondition(inputSymbol)) {
-            if (transition.conditions.length === 0) { // Kleene Closures should not consume the string
+            if (transition.conditions.length == 0) { // Kleene Closures should not consume the string
               this.traversalStack.push(new TraversalTransition(
                 stateTraversalElement.depth, 'transition', transition));
             } else {

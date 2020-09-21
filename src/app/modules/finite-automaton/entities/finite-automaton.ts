@@ -5,6 +5,7 @@ export class FiniteAutomaton extends Automaton {
 
     constructor(isDeterministic: boolean) {
         super('finite-automaton');
+        // this.isDeterministic = isDeterministic;
         this.isDeterministic = false;
     }
 }

@@ -1,22 +1,26 @@
-<div class="sidebar">
-  <a routerLinkActive="active" routerLink="diagram">
-    <div class="menu-item">
-      <span>Construcción</span>
-    </div>
-  </a>
 
-  <a routerLinkActive="active" routerLink="diagram/simulator">
-    <div class="menu-item indent">
-      <span>Diagrama de trancisión</span>
-    </div>
-  </a>
+  <div class="sidebar  bg-primary">
+    <a routerLinkActive="active" routerLink="diagram">
+      <div class="menu-item">
+        <span  style="color:white">Dibujar automata</span>
+      </div>
+    </a>
 
-  <a routerLinkActive="active" routerLink="options">
-    <div class="menu-item">
-      <span>Opciones</span>
-    </div>
-  </a>
-</div>
+    <a routerLinkActive="" routerLink="diagram/simulator">
+      <div class="menu-item">
+        <span style="color:white">Validar Palabra</span>
+      </div>
+    </a>
+
+    <a routerLinkActive="active" routerLink="options">
+      <div class="menu-item">
+        <span style="color:white">Agregar Alfabeto</span>
+      </div>
+    </a>
+    
+    
+  </div>
+
 <div class="diagram-wrapper">
   <router-outlet></router-outlet>
 </div>
